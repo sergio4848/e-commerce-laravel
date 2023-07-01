@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title','Kategoriler')
+@section('title','FAQ Listesi')
 
 @section('content')
     <div class="content">
@@ -10,21 +10,28 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header card-header-primary">
-                            <a href="{{route('admin_category_add')}}" style="position: absolute; right: 25px;font-style: italic; background-color:#4a5568;">Kategori Ekle</a>
-                            <h4 class="card-title ">Kategoriler</h4>
+                            <a href="{{route('admin_faq_add')}}" style="position: absolute; right: 25px;"><strong>FAQ EKLE</strong></a>
+                            @include('home.message')
+                            <h5 class="title">FAQ</h5>
+
+                            <p class="category">Sıkça Sorulan Sorular</p>
 
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table">
                                     <thead class=" text-primary">
-                                    <th>Id</th>
-                                    <th>Parent</th>
-                                    <th>Title</th>
-                                    <th>Status</th>
-                                    <th>Edit</th>
-                                    <th>Delete</th>
+                                    <th><b>Id</b></th>
+                                    <th><b>Position</b></th>
+                                    <th><b>Question</b></th>
+                                    <th><b>Answer</b></th>
+                                    <th><b>Status</b></th>
+                                    <th><b>Edit</b></th>
+                                    <th><b>Delete</b></th>
+
                                     </thead>
+
+
                                     <tbody>
                                     @foreach($datalist as $rs)
                                         <tr>
@@ -32,26 +39,31 @@
                                                 {{$rs->id}}
                                             </td>
                                             <td>
-                                                {{ \App\Http\Controllers\Admin\CategoryController::getParentsTree($rs,$rs->title) }}
+                                                {{$rs->position}}
                                             </td>
                                             <td>
-                                                {{$rs->title}}
+                                                {{$rs->question}}
+                                            </td>
+                                            <td>
+                                                {!! $rs->answer !!}
                                             </td>
                                             <td>
                                                 {{$rs->status}}
                                             </td>
                                             <td>
-                                                <a href="{{route('admin_category_edit',['id'=>$rs->id])}}"><img src="{{asset('assets/admin/images')}}/edit.png" height="30"></a>
+                                                <a href="{{route('admin_faq_edit',['id'=>$rs->id])}}"><img src="{{asset('assets/admin/images')}}/edit.png" height="30"></a>
                                             </td>
                                             <td>
-                                                <a href="{{route('admin_category_delete',['id'=>$rs->id])}}" onclick="return confirm('Delete ! Are you sure?')"><img src="{{asset('assets/admin/images')}}/delete.png" height="30"></a>
+                                                <a href="{{route('admin_faq_delete',['id'=>$rs->id])}}" onclick="return confirm('Delete ! Are you sure?')"><img src="{{asset('assets/admin/images')}}/delete.png" height="30"></a>
                                             </td>
                                         </tr>
-                                    @endforeach
+
                                     </tbody>
+                                    @endforeach
                                 </table>
                             </div>
                         </div>
+
                     </div>
                 </div>
 @endsection

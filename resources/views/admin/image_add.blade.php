@@ -25,8 +25,8 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="title">Ürün: {{$data->title}}</h5>
-                    <p class="place">Fotoğraf Galerisi Sayfası</p>
+                    <h5 class="title">Araba: {{$data->title}}</h5>
+                    <p class="place">Image Gallery Sayfası</p>
                 </div>
                 <div class="card-body">
 

@@ -38,7 +38,7 @@
                                                 <option value="false">False</option>
 
                                             </select></tr><br><br>
-                                        <tr><button type="submit" class="btn btn-primary" style=" width: 150px;">Ekle</button></tr>
+                                        <tr><button type="submit" style="color:#95999c; background-color: #00bbff; width: 150px;">Ekle</button></tr>
                                     </table>
                                 </form>
                             </div>

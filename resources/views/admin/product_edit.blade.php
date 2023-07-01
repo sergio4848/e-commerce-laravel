@@ -58,6 +58,10 @@
                                         <input type="number" name="minquantity" value="{{$data->minquantity}}" class="form-control">
                                     </div>
                                     <div class="form-group">
+                                        <label>Tax</label>
+                                        <input type="text" name="tax" value="{{$data->tax}}" class="form-control">
+                                    </div>
+                                    <div class="form-group">
                                         <label>Detail</label>
                                         <textarea id="detail" name="detail">{{$data->detail}}</textarea>
                                         <script>

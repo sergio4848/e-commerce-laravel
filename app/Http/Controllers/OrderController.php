@@ -3,48 +3,125 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\Orderitem;
+use App\Models\ShopCart;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
-        $orders = Order::all();
-        return response()->json($orders);
+        $datalist=Order::where('user_id',Auth::id())->get();
+        $shopcart=Shopcart::select('id','product_id')->get();
+        return view('home.user_order',['datalist'=>$datalist,'shopcart'=>$shopcart]);
     }
 
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create(Request $request)
+    {
+        $total=$request->input('total');
+        $shopcart=Shopcart::select('id','product_id')->get();
+        return view('home.user_order_add',['total'=>$total,'shopcart'=>$shopcart]);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function store(Request $request)
     {
-        $order = Order::create($request->all());
-        return response()->json($order, 201);
+        $data = new Order;
+
+        $data->name = $request->input('name');
+        $data->address = $request->input('address');
+        $data->email = $request->input('email');
+        $data->phone = $request->input('phone');
+        $data->total = $request->input('total');
+        $data->user_id = Auth::id();
+        $data->IP = $_SERVER['REMOTE_ADDR'];
+
+        $data->save();
+        $datalist=Shopcart::where('user_id',Auth::id())->get();
+        foreach($datalist as $rs)
+        {
+            $data2=new Orderitem;
+            $data2->user_id=Auth::id();
+            $data2->product_id=$rs->product_id;
+            $data2->order_id=$data->id;
+            $data2->price=$rs->product->price;
+            $data2->quantity=$rs->quantity;
+            $data2->amount=$rs->quantity * $rs->product->price;
+            $data2->total=$data->total;
+
+
+            $data2->save();
+
+        }
+        $data3=Shopcart::where('user_id',Auth::id());
+        $data3->delete();
+
+        return redirect()->route('user_orders')->with('success','product Sipariş Edildi!');
+
     }
 
-    public function show($id)
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\Order  $order
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Order $order,$id)
     {
-        $order = Order::find($id);
-        if (!$order) {
-            return response()->json(['message' => 'Order not found'], 404);
-        }
-        return response()->json($order);
+
+        $datalist=Orderitem::where('user_id',Auth::id())->where('order_id',$id)->get();
+        return view('home.user_order_item',['datalist'=>$datalist]);
     }
 
-    public function update(Request $request, $id)
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Models\Order  $order
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Order $order)
     {
-        $order = Order::find($id);
-        if (!$order) {
-            return response()->json(['message' => 'Order not found'], 404);
-        }
-        $order->update($request->all());
-        return response()->json($order);
+        //
     }
 
-    public function destroy($id)
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Order  $order
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, Order $order)
     {
-        $order = Order::find($id);
-        if (!$order) {
-            return response()->json(['message' => 'Order not found'], 404);
-        }
-        $order->delete();
-        return response()->json(['message' => 'Order deleted']);
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\Order  $order
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Order $order,$id)
+    {
+        $data=Order::find($id);
+        $data->delete();
+        return redirect()->back()->with('Success','Ürüm iptal edildi!');
     }
 }

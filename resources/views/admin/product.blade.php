@@ -10,7 +10,7 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header card-header-primary">
-                            <a href="{{route('admin_product_add')}}" class="btn btn-secondary" style="position: absolute; right: 25px;">Ürün Ekle</a>
+                            <a href="{{route('admin_product_add')}}" style="position: absolute; right: 25px;font-style: italic; background-color:#9acffa;">Ürün Ekle</a>
                             <h4 class="card-title ">Ürünler</h4>
 
                         </div>
@@ -33,12 +33,12 @@
                                         <tr>
                                             <td>{{$rs->id}}</td>
                                             <td>{{ \App\Http\Controllers\Admin\CategoryController::getParentsTree($rs->category,$rs->category->title) }}</td>
-                                            <td><a href="#" target="_blank">{{$rs->title}}</a></td>
+                                            <td><a href="{{route('product',['id' => $rs->id,'slug' => $rs->slug])}}" target="_blank">{{$rs->title}}</a></td>
                                             <td>{{$rs->quantity}}</td>
                                             <td>{{$rs->price}}₺</td>
                                             <td>
                                                 @if ($rs->image)
-                                                    <img src="{{Storage::url($rs->image)}}" height="30" alt="">
+                                                    <img src="{{Storage::url($rs->image)}}" height="60" alt="">
                                                 @endif
                                             </td>
                                             <td><a href="{{route('admin_image_add', ['product_id' =>$rs->id])}}" onclick="return !window.open(this.href, '','top=50, left=100, width=1100, height=700')">

@@ -2,9 +2,9 @@
 
 @section('title','Ürün Ekle')
 
-
+    <head>
         @FilemanagerScript
-
+    </head>
     <script src="https://cdn.ckeditor.com/4.14.0/standard/ckeditor.js"></script>
 
 
@@ -56,7 +56,10 @@
                                         <label>Minquantity</label>
                                         <input type="number" name="minquantity" value="5" class="form-control">
                                     </div>
-
+                                    <div class="form-group">
+                                        <label>Tax</label>
+                                        <input type="text" name="tax" value="18" class="form-control">
+                                    </div>
                                     <div class="form-group">
                                         <label>Detail</label>
                                         <textarea id="detail" name="detail"></textarea>

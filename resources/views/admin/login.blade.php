@@ -31,7 +31,7 @@
             @include('home.message')
             <form action="{{route('admin_logincheck')}}" method="post" class="login100-form validate-form">
                 @csrf
-                <span class="login100-form-title p-b-55">
+					<span class="login100-form-title p-b-55">
 						Login
 					</span>
 

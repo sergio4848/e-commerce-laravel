@@ -2,49 +2,128 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
-        $products = Product::all();
-        return response()->json($products);
+        $datalist = Product::where('user_id',Auth::id())->get();
+        return view('home.user_product', ['datalist' =>$datalist]);
     }
 
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        $datalist=Category::all();
+        return  view('home.user_product_add', ['datalist' =>$datalist]);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function store(Request $request)
     {
-        $product = Product::create($request->all());
-        return response()->json($product, 201);
+        $data = new Product();
+        $data->title=$request->input('title');
+        $data->keywords=$request->input('keywords');
+        $data->description=$request->input('description');
+        $data->slug=$request->input('slug');
+        $data->status=$request->input('status');
+        $data->category_id=$request->input('category_id');
+        $data->user_id=Auth::id();
+        $data->price=$request->input('price');
+        $data->quantity=$request->input('quantity');
+        $data->minquantity=$request->input('minquantity');
+        $data->tax=(int)$request->input('tax');
+        $data->detail=$request->input('detail');
+        $data->image=Storage::putFile('images', $request->file('image'));
+
+        $data->save();
+        return redirect()->route('user_products');
+
     }
 
-    public function show($id)
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\Product  $product
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Product $product)
     {
-        $product = Product::find($id);
-        if (!$product) {
-            return response()->json(['message' => 'Product not found'], 404);
-        }
-        return response()->json($product);
+        //
     }
 
-    public function update(Request $request, $id)
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Models\Product  $product
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Product $product, $id)
     {
-        $product = Product::find($id);
-        if (!$product) {
-            return response()->json(['message' => 'Product not found'], 404);
-        }
-        $product->update($request->all());
-        return response()->json($product);
+        $data=Product::find($id);
+        $datalist=Category::all();
+        return view('home.user_product_edit', ['data'=>$data, 'datalist'=>$datalist]);
     }
 
-    public function destroy($id)
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Product  $product
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, Product $product,$id)
     {
-        $product = Product::find($id);
-        if (!$product) {
-            return response()->json(['message' => 'Product not found'], 404);
+        $data=Product::find($id);
+        $data->title=$request->input('title');
+        $data->keywords=$request->input('keywords');
+        $data->description=$request->input('description');
+        $data->slug=$request->input('slug');
+        $data->status=$request->input('status');
+        $data->category_id=$request->input('category_id');
+        $data->user_id=Auth::id();
+        $data->price=$request->input('price');
+        $data->quantity=$request->input('quantity');
+        $data->minquantity=$request->input('minquantity');
+        $data->tax=(int)$request->input('tax');
+        $data->detail=$request->input('detail');
+        if ($request->file('image')!=null){
+            $data->image=Storage::putFile('images', $request->file('image'));
         }
-        $product->delete();
-        return response()->json(['message' => 'Product deleted']);
+        $data->save();
+        return redirect()->route('user_products');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\Product  $product
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Product $product, $id)
+    {
+        $data = Product::find($id);
+        $data->delete();
+
+        return redirect()->route('user_products');
     }
 }

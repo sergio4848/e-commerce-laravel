@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -21,7 +20,7 @@ class User extends Authenticatable
     /**
      * The attributes that are mass assignable.
      *
-     * @var array<int, string>
+     * @var string[]
      */
     protected $fillable = [
         'name',
@@ -32,7 +31,7 @@ class User extends Authenticatable
     /**
      * The attributes that should be hidden for serialization.
      *
-     * @var array<int, string>
+     * @var array
      */
     protected $hidden = [
         'password',
@@ -44,7 +43,7 @@ class User extends Authenticatable
     /**
      * The attributes that should be cast.
      *
-     * @var array<string, string>
+     * @var array
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
@@ -53,9 +52,27 @@ class User extends Authenticatable
     /**
      * The accessors to append to the model's array form.
      *
-     * @var array<int, string>
+     * @var array
      */
     protected $appends = [
         'profile_photo_url',
     ];
+    public function reviews(){
+        return $this->hasMany(Review::class);
+    }
+    public function shopcart(){
+        return $this->hasMany(ShopCart::class);
+    }
+    public function orderitem(){
+        return $this->hasMany(Orderitem::class);
+    }
+    public function order()
+    {
+        return $this->belongsTo(Order::class);
+    }
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class);
+    }
+
 }
